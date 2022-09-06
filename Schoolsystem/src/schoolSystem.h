@@ -1,17 +1,19 @@
 #pragma once
-#include "student.h"
-#include <vector>
+#include "classes.h"
 #include <iostream>
 
 class schoolSystem
 {
 public:
 	void Run();
-	void addStudent(std::string name, int age);
-	void removeStudent(int id);
+	void addStudent(std::string name, int age, int classsid);
+	void addClass(std::string name);
+	void removeClass(int id);
+	void removeStudent(int id, int classsid);
+	void showClasses();
+	void showStudents(int classid);
 
-	std::vector<student> studentData;
-	std::vector<std::string> schoolClasses;
+	std::vector<classs> schoolClasses;
 private:
 
 };
