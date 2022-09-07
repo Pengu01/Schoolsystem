@@ -2,6 +2,7 @@
 
 int main() 
 {
-	schoolSystem system;
+	schoolSystem
+ system;
 	system.Run();
 }

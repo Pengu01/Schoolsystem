@@ -12,6 +12,8 @@ public:
 	void removeStudent(int id, int classsid);
 	void showClasses();
 	void showStudents(int classid);
+	void loadClasses();
+	void loadStudents();
 
 	std::vector<classs> schoolClasses;
 private:

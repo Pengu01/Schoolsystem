@@ -1,13 +1,27 @@
 #include "schoolSystem.h"
+#include <fstream>
+
+namespace Lib
+{
+	void split(std::string string, std::string divider, std::vector<std::string>* result)
+	{
+		std::vector<std::string> local;
+		size_t pos = 0;
+		std::string token;
+		while ((pos = string.find(divider)) != std::string::npos) {
+			token = string.substr(0, pos);
+			local.push_back(token);
+			string.erase(0, pos + divider.length());
+		}
+		*result = local;
+	}
+}
 
 void schoolSystem::Run()
 {
-	int counter = 0;
 	int input = 0;
 	while (true)
 	{
-		std::cout << "Loop: " << counter << "\n";
-		counter++;
 		std::cout << "1: Add a student" << "\n";
 		std::cout << "2: Add a class" << "\n";
 		std::cout << "3: Remove a student" << "\n";
@@ -69,13 +83,36 @@ void schoolSystem::Run()
 			std::cin >> classid;
 			showStudents(classid);
 		}
+		else if (input == 7)
+		{
+			std::ofstream file("classes.txt");
+			for (int i = 0; i < schoolClasses.size(); i++)
+			{
+				file << schoolClasses[i].name + " ";
+			}
+			file.close();
+			for (int i = 0; i < schoolClasses.size(); i++)
+			{
+				std::ofstream file(schoolClasses[i].name + ".txt");
+				for (int s = 0; s < schoolClasses[i].studentData.size(); s++)
+				{
+					file << schoolClasses[i].studentData[s].name + " " + std::to_string(schoolClasses[i].studentData[s].age) + " ";
+				}
+				file.close();
+			}
+		}
+		else if (input == 8)
+		{
+			loadClasses();
+			loadStudents();
+		}
 		else if (input == 9)
 		{
 			break;
 		}
 		else
 		{
-			std::cout << "Please provide valid input" << "\n";
+			std::cout << "Please provide valid input" << "\n ";
 		}
 	}
 }
@@ -118,5 +155,36 @@ void schoolSystem::showStudents(int classid)
 	for (int i = 0; i < schoolClasses[classid].studentData.size(); i++)
 	{
 		std::cout << i << ": " << schoolClasses[classid].studentData[i].name << " " << schoolClasses[classid].studentData[i].age << "\n";
+	}
+}
+
+void schoolSystem::loadClasses()
+{
+	std::vector<std::string> result;
+	std::ifstream openFile("classes.txt");
+	std::string fileContent;
+	std::getline(openFile, fileContent);
+	Lib::split(fileContent, " ", &result);
+	for (int i = 0; i < result.size(); i++)
+	{
+		addClass(result[i]);
+	}
+	openFile.close();
+}
+
+void schoolSystem::loadStudents()
+{
+	for (int i = 0; i < schoolClasses.size(); i++)
+	{
+		std::vector<std::string> result;
+		std::ifstream openFile(schoolClasses[i].name + ".txt");
+		std::string fileContent;
+		std::getline(openFile, fileContent);
+		Lib::split(fileContent, " ", &result);
+		for (int k = 0; k < result.size(); k += 3)
+		{
+			addStudent(result[k] + " " + result[k + 1], std::stoi(result[k + 2]), i);
+		}
+		openFile.close();
 	}
 }
